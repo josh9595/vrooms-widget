@@ -1,11 +1,23 @@
 package uk.co.josh9595.vroomswidget.widget
 
+import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.glance.Button
+import androidx.glance.GlanceId
 import androidx.glance.LocalSize
+import androidx.glance.action.ActionParameters
+import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.SizeMode
+import androidx.glance.appwidget.action.ActionCallback
+import androidx.glance.appwidget.action.actionRunCallback
+import androidx.glance.currentState
+import androidx.glance.layout.Alignment
+import androidx.glance.layout.Column
+import androidx.glance.text.Text
+import uk.co.josh9595.vroomswidget.AppWidgetBox
 import uk.co.josh9595.vroomswidget.AppWidgetColumn
 
 class VroomsWidget: GlanceAppWidget() {
@@ -16,68 +28,108 @@ class VroomsWidget: GlanceAppWidget() {
         private val largeMode = DpSize(260.dp, 280.dp)
     }
 
+    override val stateDefinition = VroomsInfoStateDefinition
+
+    override val sizeMode: SizeMode = SizeMode.Responsive(
+        setOf(thinMode, smallMode, mediumMode, largeMode)
+    )
+
     @Composable
     override fun Content() {
+        val vroomsInfo = currentState<VroomsInfo>()
         val size = LocalSize.current
 
-        when (size) {
-            thinMode -> VroomsThin()
-            smallMode -> VroomsSmall()
-            mediumMode -> VroomsMedium()
-            largeMode -> VroomsLarge()
+        when (vroomsInfo) {
+            is VroomsInfo.Available -> {
+                when (size) {
+                    thinMode -> VroomsThin(vroomsInfo)
+                    smallMode -> VroomsSmall(vroomsInfo)
+                    mediumMode -> VroomsMedium(vroomsInfo)
+                    largeMode -> VroomsLarge(vroomsInfo)
+                }
+            }
+            VroomsInfo.Loading -> {
+                AppWidgetBox(contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+            is VroomsInfo.Unavailable -> {
+                AppWidgetColumn(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Data not available")
+                    Button("Refresh", actionRunCallback<UpdateVroomsAction>())
+                }
+            }
         }
     }
 
     @Composable
-    fun VroomsThin() {
+    fun VroomsThin(vroomsInfo: VroomsInfo.Available) {
         AppWidgetColumn {
-
+            RaceInfo(
+                round = vroomsInfo.round,
+                name = vroomsInfo.name,
+                location = vroomsInfo.location
+            )
         }
     }
 
     @Composable
-    fun VroomsSmall() {
+    fun VroomsSmall(vroomsInfo: VroomsInfo.Available) {
         AppWidgetColumn {
-
+            RaceInfo(
+                round = vroomsInfo.round,
+                name = vroomsInfo.name,
+                location = vroomsInfo.location
+            )
         }
     }
 
     @Composable
-    fun VroomsMedium() {
+    fun VroomsMedium(vroomsInfo: VroomsInfo.Available) {
         AppWidgetColumn {
-
+            RaceInfo(
+                round = vroomsInfo.round,
+                name = vroomsInfo.name,
+                location = vroomsInfo.location
+            )
         }
     }
 
     @Composable
-    fun VroomsLarge() {
+    fun VroomsLarge(vroomsInfo: VroomsInfo.Available) {
         AppWidgetColumn {
-
+            RaceInfo(
+                round = vroomsInfo.round,
+                name = vroomsInfo.name,
+                location = vroomsInfo.location
+            )
         }
     }
 
     @Composable
-    @Preview
-    fun ThinPreview() {
-        VroomsThin()
+    fun RaceInfo(
+        round: Int,
+        name: String,
+        location: String
+    ) {
+        Column {
+            Text(text = round.toString())
+            Text(text = name)
+            Text(text = location)
+        }
     }
 
-    @Composable
-    @Preview
-    fun SmallPreview() {
-        VroomsSmall()
-    }
+    class UpdateVroomsAction : ActionCallback {
+        override suspend fun onAction(
+            context: Context,
+            glanceId: GlanceId,
+            parameters: ActionParameters
+        ) {
+            VroomsWorker.enqueue(context)
+        }
 
-    @Composable
-    @Preview
-    fun MediumPreview() {
-        VroomsMedium()
     }
-
-    @Composable
-    @Preview
-    fun LargePreview() {
-        VroomsLarge()
-    }
-
 }
