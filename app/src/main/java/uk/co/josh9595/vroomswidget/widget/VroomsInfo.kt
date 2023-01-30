@@ -13,7 +13,9 @@ sealed interface VroomsInfo {
         val round: Int,
         val location: String,
         val name: String,
-        val sessions: List<Session>
+        val nameImage: Int,
+        val trackImage: Int,
+        val sessions: List<SessionDate>
     ): VroomsInfo
 
     @Serializable
@@ -23,8 +25,14 @@ sealed interface VroomsInfo {
 }
 
 @Serializable
+data class SessionDate(
+    val date: String,
+    val sessionOne: Session,
+    val sessionTwo: Session? = null
+)
+
+@Serializable
 data class Session(
     val name: String,
-    val date: String,
     val time: String
 )

@@ -2,11 +2,17 @@ package uk.co.josh9595.vroomswidget.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import uk.co.josh9595.vroomswidget.R
 
-// Set of Material typography styles to start with
+val formulaFont = FontFamily(
+    Font(R.font.formula_regular),
+    Font(R.font.formula_bold, weight = FontWeight.Bold)
+)
+
 val Typography = Typography(
     body1 = TextStyle(
         fontFamily = FontFamily.Default,
