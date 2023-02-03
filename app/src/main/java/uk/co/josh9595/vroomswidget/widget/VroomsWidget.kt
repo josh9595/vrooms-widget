@@ -2,12 +2,11 @@ package uk.co.josh9595.vroomswidget.widget
 
 import android.content.Context
 import android.graphics.drawable.Icon
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.glance.*
 import androidx.glance.action.ActionParameters
 import androidx.glance.appwidget.CircularProgressIndicator
@@ -15,6 +14,9 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
+import androidx.glance.appwidget.cornerRadius
+import androidx.glance.appwidget.lazy.LazyColumn
+import androidx.glance.appwidget.lazy.items
 import androidx.glance.layout.*
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -33,6 +35,18 @@ class VroomsWidget: GlanceAppWidget() {
 
     override val sizeMode: SizeMode = SizeMode.Responsive(
         setOf(thinMode, smallMode, mediumMode, largeMode)
+    )
+
+    val roundStyle = TextStyle(
+        fontSize = 16.sp
+    )
+
+    val locationStyle = TextStyle(
+        fontSize = 16.sp
+    )
+
+    val sessionStyle = TextStyle(
+        fontSize = 18.sp
     )
 
     @Composable
@@ -69,142 +83,159 @@ class VroomsWidget: GlanceAppWidget() {
     }
 
     @Composable
-    fun VroomsThin(vroomsInfo: VroomsInfo.Available) {
+    fun VroomsThin(info: VroomsInfo.Available) {
         AppWidgetBox {
-            RaceInfo(
-                round = vroomsInfo.round,
-                name = vroomsInfo.name,
-                nameImage = vroomsInfo.nameImage,
-                trackImage = vroomsInfo.trackImage,
-                location = vroomsInfo.location,
-                vroomsInfo.sessions
-            )
+//            TrackImage(info)
+            Column {
+                RaceImage(info)
+                RaceDetails(info)
+                AllSessionsContainer(info)
+            }
         }
     }
 
     @Composable
-    fun VroomsSmall(vroomsInfo: VroomsInfo.Available) {
+    fun VroomsSmall(info: VroomsInfo.Available) {
         AppWidgetBox {
-            RaceInfo(
-                round = vroomsInfo.round,
-                name = vroomsInfo.name,
-                nameImage = vroomsInfo.nameImage,
-                trackImage = vroomsInfo.trackImage,
-                location = vroomsInfo.location,
-                vroomsInfo.sessions
-            )
+//            TrackImage(info)
+            Column {
+                RaceImage(info)
+                RaceDetails(info)
+                AllSessionsContainer(info)
+            }
         }
     }
 
     @Composable
-    fun VroomsMedium(vroomsInfo: VroomsInfo.Available) {
+    fun VroomsMedium(info: VroomsInfo.Available) {
         AppWidgetBox {
-            RaceInfo(
-                round = vroomsInfo.round,
-                name = vroomsInfo.name,
-                nameImage = vroomsInfo.nameImage,
-                trackImage = vroomsInfo.trackImage,
-                location = vroomsInfo.location,
-                vroomsInfo.sessions
-            )
+//            TrackImage(info)
+            Column {
+                RaceImage(info)
+                RaceDetails(info)
+                AllSessionsContainer(info)
+            }
         }
     }
 
     @Composable
-    fun VroomsLarge(vroomsInfo: VroomsInfo.Available) {
+    fun VroomsLarge(info: VroomsInfo.Available) {
         AppWidgetBox {
-            RaceInfo(
-                round = vroomsInfo.round,
-                name = vroomsInfo.name,
-                nameImage = vroomsInfo.nameImage,
-                trackImage = vroomsInfo.trackImage,
-                location = vroomsInfo.location,
-                vroomsInfo.sessions
-            )
+//            TrackImage(info)
+            Column {
+                RaceImage(info)
+                RaceDetails(info)
+                AllSessionsContainer(info)
+            }
         }
     }
 
     @Composable
-    fun RaceInfo(
-        round: Int,
-        name: String,
-        nameImage: Int,
-        trackImage: Int,
-        location: String,
-        sessions: List<SessionDate>
-    ) {
-        val roundStyle = TextStyle(
-            fontSize = 16.sp
-        )
-        val nameStyle = TextStyle(
-            fontSize = 24.sp
-        )
-        val locationStyle = TextStyle(
-            fontSize = 16.sp
-        )
-
+    fun TrackImage(info: VroomsInfo.Available) {
         Image(
-            provider = IconImageProvider(Icon.createWithResource(LocalContext.current, trackImage).setTint(
-                LocalContext.current.resources.getColor(R.color.colorOnPrimary)
+            provider = IconImageProvider(Icon.createWithResource(LocalContext.current, info.trackImage).setTint(
+                ContextCompat.getColor(LocalContext.current, R.color.colorSurfaceVariant)
             )),
-            contentDescription = name,
-            modifier = GlanceModifier.fillMaxWidth().padding(8.dp)
+            contentDescription = info.name,
+            modifier = GlanceModifier.fillMaxWidth().padding(8.dp),
+            contentScale = ContentScale(1)
         )
+    }
 
-        Column {
+    @Composable
+    fun RaceImage(info: VroomsInfo.Available) {
+        Image(
+            provider = IconImageProvider(Icon.createWithResource(LocalContext.current, info.nameImage).setTint(
+                ContextCompat.getColor(LocalContext.current, R.color.colorPrimary)
+            )),
+            contentDescription = info.name
+        )
+    }
+
+    @Composable
+    fun RaceDetails(info: VroomsInfo.Available) {
+        Row (modifier = GlanceModifier.padding(vertical = 4.dp)) {
             Text(
-                text = "Round $round",
+                text = "Round ${info.round}",
                 style = roundStyle
             )
-            Image(
-                provider = IconImageProvider(Icon.createWithResource(LocalContext.current, nameImage).setTint(
-                    LocalContext.current.resources.getColor(R.color.colorPrimary)
-                )),
-                contentDescription = name,
-                modifier = GlanceModifier.height(40.dp)
-            )
+            Spacer(modifier = GlanceModifier.width(4.dp))
+            Text(text = "•")
+            Spacer(modifier = GlanceModifier.width(4.dp))
             Text(
-                text = location,
+                text = info.location,
                 style = locationStyle
             )
-            Row (
-                modifier = GlanceModifier.fillMaxWidth()
-            ) {
-                Session(
-                    session = sessions[0],
-                    modifier = GlanceModifier.defaultWeight()
-                )
-                Session(
-                    session = sessions[1],
-                    modifier = GlanceModifier.defaultWeight()
-                )
-                Session(
-                    session = sessions[2],
-                    modifier = GlanceModifier.defaultWeight()
+        }
+    }
+
+    @Composable
+    fun AllSessionsContainer(info: VroomsInfo.Available) {
+        LazyColumn (
+            modifier = GlanceModifier.fillMaxWidth()
+        ) {
+            items(info.sessions) { sessionDate ->
+                SessionDate(
+                    sessionDate = sessionDate,
+                    modifier = GlanceModifier
                 )
             }
         }
     }
 
     @Composable
-    fun Session(session: SessionDate, modifier: GlanceModifier) {
+    fun SessionDate(sessionDate: SessionDate, modifier: GlanceModifier) {
         Column (
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
         ){
-            Image(
-                provider = IconImageProvider(Icon.createWithResource(LocalContext.current, R.drawable.friday).setTint(
-                    LocalContext.current.resources.getColor(R.color.colorPrimary)
-                )),
-                contentDescription = "friday",
-                modifier = GlanceModifier.height(20.dp)
-            )
-            Column {
-                Text(text = "${session.sessionOne.name} ${session.sessionOne.time}")
-                session.sessionTwo?.let {
-                    Text(text ="${it.name} ${it.time}")
-                }
+            Spacer(modifier = GlanceModifier.height(12.dp))
+            SessionDateImage(sessionDate.dayImage)
+            Spacer(modifier = GlanceModifier.height(12.dp))
+            Session(sessionDate.sessionOne)
+            sessionDate.sessionTwo?.let {
+                Spacer(modifier = GlanceModifier.height(8.dp))
+                Session(it)
             }
+
+        }
+    }
+
+    @Composable
+    fun SessionDateImage(id: Int) {
+        Image(
+            provider = IconImageProvider(Icon.createWithResource(LocalContext.current, id).setTint(
+                ContextCompat.getColor(LocalContext.current, R.color.colorPrimary)
+            )),
+            contentDescription = "friday"
+        )
+    }
+
+    @Composable
+    fun Session(session: Session) {
+        Row (
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Box(
+                modifier = GlanceModifier.height(48.dp).width(48.dp).cornerRadius(8.dp).background(GlanceTheme.colors.surfaceVariant),
+                contentAlignment = Alignment(Alignment.CenterHorizontally,Alignment.CenterVertically)
+            ) {
+                Image(
+                    provider = IconImageProvider(
+                        Icon.createWithResource(LocalContext.current, session.nameImage)
+                            .setTint(
+                                ContextCompat.getColor(LocalContext.current, R.color.colorPrimary)
+                            )
+                    ),
+                    contentDescription = "friday",
+                    modifier = GlanceModifier.height(20.dp)
+                )
+            }
+            Spacer(modifier = GlanceModifier.width(8.dp))
+            Text(
+                text = "${session.time}${if (session.endTime != null) " - " + session.endTime else ""}",
+                style = sessionStyle
+            )
         }
     }
 

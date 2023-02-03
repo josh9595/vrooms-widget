@@ -13,31 +13,44 @@ object VroomsRepo {
             sessions = listOf(
                 SessionDate(
                     "03 MAR",
+                    R.drawable.friday,
                     Session(
                         name = "FP1",
-                        time = "11:30"
+                        nameImage = R.drawable.fp1,
+                        time = "11:30",
+                        endTime = "12:30"
                     ),
                     Session(
                         name = "FP2",
-                        time = "15:00"
+                        nameImage = R.drawable.fp2,
+                        time = "15:00",
+                        endTime = "16:00"
                     )
                 ),
                 SessionDate(
                     date = "04 MAR",
+                    R.drawable.saturday,
                     Session(
                         name = "FP3",
-                        time = "11:30"
+                        nameImage = R.drawable.fp3,
+                        time = "11:30",
+                        endTime = "12:30"
                     ),
                     Session(
                         name = "Q",
-                        time = "15:00"
+                        nameImage = R.drawable.q,
+                        time = "15:00",
+                        endTime = "16:00"
                     )
                 ),
                 SessionDate(
                     "05 Mar",
+                    R.drawable.sunday,
                     Session(
                         name = "R",
-                        time = "15:00"
+                        nameImage = R.drawable.flag,
+                        time = "14:00",
+                        endTime = null
                     )
                 )
             )

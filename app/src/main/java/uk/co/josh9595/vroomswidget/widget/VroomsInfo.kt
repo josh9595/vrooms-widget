@@ -27,6 +27,7 @@ sealed interface VroomsInfo {
 @Serializable
 data class SessionDate(
     val date: String,
+    val dayImage: Int,
     val sessionOne: Session,
     val sessionTwo: Session? = null
 )
@@ -34,5 +35,7 @@ data class SessionDate(
 @Serializable
 data class Session(
     val name: String,
-    val time: String
+    val nameImage: Int,
+    val time: String,
+    val endTime: String?
 )

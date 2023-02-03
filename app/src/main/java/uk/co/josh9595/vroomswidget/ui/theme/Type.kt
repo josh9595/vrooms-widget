@@ -8,11 +8,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import uk.co.josh9595.vroomswidget.R
 
-val formulaFont = FontFamily(
-    Font(R.font.formula_regular),
-    Font(R.font.formula_bold, weight = FontWeight.Bold)
-)
-
 val Typography = Typography(
     body1 = TextStyle(
         fontFamily = FontFamily.Default,
