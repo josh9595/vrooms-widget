@@ -25,57 +25,7 @@ object VroomsRepo {
             }
         }
 
-        return VroomsInfo.Available(
-            round = 1,
-            dateValue = "Mar 03-05",
-            name = "Bahrain",
-            nameImage = R.drawable.bahrain,
-            trackImage = R.drawable.bahrain_track,
-            sessions = listOf(
-                SessionDate(
-                    "03 MAR",
-                    R.drawable.friday,
-                    Session(
-                        name = "FP1",
-                        nameImage = R.drawable.fp1,
-                        time = "11:30",
-                        endTime = "12:30"
-                    ),
-                    Session(
-                        name = "FP2",
-                        nameImage = R.drawable.fp2,
-                        time = "15:00",
-                        endTime = "16:00"
-                    )
-                ),
-                SessionDate(
-                    date = "04 MAR",
-                    R.drawable.saturday,
-                    Session(
-                        name = "FP3",
-                        nameImage = R.drawable.fp3,
-                        time = "11:30",
-                        endTime = "12:30"
-                    ),
-                    Session(
-                        name = "Q",
-                        nameImage = R.drawable.q,
-                        time = "15:00",
-                        endTime = "16:00"
-                    )
-                ),
-                SessionDate(
-                    "05 Mar",
-                    R.drawable.sunday,
-                    Session(
-                        name = "R",
-                        nameImage = R.drawable.flag,
-                        time = "14:00",
-                        endTime = null
-                    )
-                )
-            )
-        )
+        return VroomsInfo.Unavailable("No next race")
     }
 }
 

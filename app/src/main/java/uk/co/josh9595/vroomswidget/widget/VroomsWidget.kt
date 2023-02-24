@@ -76,7 +76,7 @@ class VroomsWidget: GlanceAppWidget() {
 
     @Composable
     fun VroomsThin(info: VroomsInfo.Available) {
-//        TrackImage(info)
+        TrackImage(info)
         Column {
             RaceImage(info)
             RaceDetails(info)
@@ -86,7 +86,7 @@ class VroomsWidget: GlanceAppWidget() {
 
     @Composable
     fun VroomsSmall(info: VroomsInfo.Available) {
-//        TrackImage(info)
+        TrackImage(info)
         Column {
             RaceImage(info)
             RaceDetails(info)
@@ -96,7 +96,7 @@ class VroomsWidget: GlanceAppWidget() {
 
     @Composable
     fun VroomsMedium(info: VroomsInfo.Available) {
-//        TrackImage(info)
+        TrackImage(info)
         Column {
             RaceImage(info)
             RaceDetails(info)
@@ -106,7 +106,7 @@ class VroomsWidget: GlanceAppWidget() {
 
     @Composable
     fun VroomsLarge(info: VroomsInfo.Available) {
-//        TrackImage(info)
+        TrackImage(info)
         Column {
             RaceImage(info)
             RaceDetails(info)
