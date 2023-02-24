@@ -1,11 +1,14 @@
 package uk.co.josh9595.vroomswidget.widget
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.appwidget.updateAll
 import androidx.work.*
+import uk.co.josh9595.vroomswidget.data.VroomsNetwork
 import java.time.Duration
 
 class VroomsWorker(
@@ -43,11 +46,14 @@ class VroomsWorker(
     override suspend fun doWork(): Result {
         val manager = GlanceAppWidgetManager(context)
         val glanceIds = manager.getGlanceIds(VroomsWidget::class.java)
+        val calendar = VroomsNetwork.retrofit.getCalendar()
+
         return try {
             // Update state to indicate loading
             setWidgetState(glanceIds, VroomsInfo.Loading)
             // Update state with new data
-            setWidgetState(glanceIds, VroomsRepo.getVroomsInfo())
+
+            setWidgetState(glanceIds, VroomsRepo.getVroomsInfo(calendar))
 
             Result.success()
         } catch (e: Exception) {

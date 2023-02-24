@@ -2,6 +2,8 @@ package uk.co.josh9595.vroomswidget.widget
 
 import android.content.Context
 import android.graphics.drawable.Icon
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -37,18 +39,6 @@ class VroomsWidget: GlanceAppWidget() {
         setOf(thinMode, smallMode, mediumMode, largeMode)
     )
 
-    val roundStyle = TextStyle(
-        fontSize = 16.sp
-    )
-
-    val locationStyle = TextStyle(
-        fontSize = 16.sp
-    )
-
-    val sessionStyle = TextStyle(
-        fontSize = 18.sp
-    )
-
     @Composable
     override fun Content() {
         val vroomsInfo = currentState<VroomsInfo>()
@@ -57,11 +47,13 @@ class VroomsWidget: GlanceAppWidget() {
         GlanceTheme {
             when (vroomsInfo) {
                 is VroomsInfo.Available -> {
-                    when (size) {
-                        thinMode -> VroomsThin(vroomsInfo)
-                        smallMode -> VroomsSmall(vroomsInfo)
-                        mediumMode -> VroomsMedium(vroomsInfo)
-                        largeMode -> VroomsLarge(vroomsInfo)
+                    AppWidgetBox(modifier = GlanceModifier.background(GlanceTheme.colors.surface)) {
+                        when (size) {
+                            thinMode -> VroomsThin(vroomsInfo)
+                            smallMode -> VroomsSmall(vroomsInfo)
+                            mediumMode -> VroomsMedium(vroomsInfo)
+                            largeMode -> VroomsLarge(vroomsInfo)
+                        }
                     }
                 }
                 VroomsInfo.Loading -> {
@@ -84,49 +76,41 @@ class VroomsWidget: GlanceAppWidget() {
 
     @Composable
     fun VroomsThin(info: VroomsInfo.Available) {
-        AppWidgetBox {
-//            TrackImage(info)
-            Column {
-                RaceImage(info)
-                RaceDetails(info)
-                AllSessionsContainer(info)
-            }
+//        TrackImage(info)
+        Column {
+            RaceImage(info)
+            RaceDetails(info)
+            AllSessionsContainer(info.sessions)
         }
     }
 
     @Composable
     fun VroomsSmall(info: VroomsInfo.Available) {
-        AppWidgetBox {
-//            TrackImage(info)
-            Column {
-                RaceImage(info)
-                RaceDetails(info)
-                AllSessionsContainer(info)
-            }
+//        TrackImage(info)
+        Column {
+            RaceImage(info)
+            RaceDetails(info)
+            AllSessionsContainer(info.sessions)
         }
     }
 
     @Composable
     fun VroomsMedium(info: VroomsInfo.Available) {
-        AppWidgetBox {
-//            TrackImage(info)
-            Column {
-                RaceImage(info)
-                RaceDetails(info)
-                AllSessionsContainer(info)
-            }
+//        TrackImage(info)
+        Column {
+            RaceImage(info)
+            RaceDetails(info)
+            AllSessionsContainer(info.sessions)
         }
     }
 
     @Composable
     fun VroomsLarge(info: VroomsInfo.Available) {
-        AppWidgetBox {
-//            TrackImage(info)
-            Column {
-                RaceImage(info)
-                RaceDetails(info)
-                AllSessionsContainer(info)
-            }
+//        TrackImage(info)
+        Column {
+            RaceImage(info)
+            RaceDetails(info)
+            AllSessionsContainer(info.sessions)
         }
     }
 
@@ -134,7 +118,7 @@ class VroomsWidget: GlanceAppWidget() {
     fun TrackImage(info: VroomsInfo.Available) {
         Image(
             provider = IconImageProvider(Icon.createWithResource(LocalContext.current, info.trackImage).setTint(
-                ContextCompat.getColor(LocalContext.current, R.color.colorSurfaceVariant)
+                ContextCompat.getColor(LocalContext.current, R.color.colorPrimary)
             )),
             contentDescription = info.name,
             modifier = GlanceModifier.fillMaxWidth().padding(8.dp),
@@ -157,24 +141,35 @@ class VroomsWidget: GlanceAppWidget() {
         Row (modifier = GlanceModifier.padding(vertical = 4.dp)) {
             Text(
                 text = "Round ${info.round}",
-                style = roundStyle
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    color = GlanceTheme.colors.onSurface
+                )
             )
             Spacer(modifier = GlanceModifier.width(4.dp))
-            Text(text = "•")
+            Text(text = "•",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    color = GlanceTheme.colors.onSurface
+                )
+            )
             Spacer(modifier = GlanceModifier.width(4.dp))
             Text(
-                text = info.location,
-                style = locationStyle
+                text = info.dateValue,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    color = GlanceTheme.colors.onSurface
+                )
             )
         }
     }
 
     @Composable
-    fun AllSessionsContainer(info: VroomsInfo.Available) {
+    fun AllSessionsContainer(sessionDates: List<SessionDate>) {
         LazyColumn (
             modifier = GlanceModifier.fillMaxWidth()
         ) {
-            items(info.sessions) { sessionDate ->
+            items(sessionDates) { sessionDate ->
                 SessionDate(
                     sessionDate = sessionDate,
                     modifier = GlanceModifier
@@ -189,15 +184,14 @@ class VroomsWidget: GlanceAppWidget() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
         ){
-            Spacer(modifier = GlanceModifier.height(12.dp))
             SessionDateImage(sessionDate.dayImage)
             Spacer(modifier = GlanceModifier.height(12.dp))
             Session(sessionDate.sessionOne)
             sessionDate.sessionTwo?.let {
                 Spacer(modifier = GlanceModifier.height(8.dp))
                 Session(it)
+                Spacer(modifier = GlanceModifier.height(12.dp))
             }
-
         }
     }
 
@@ -217,7 +211,7 @@ class VroomsWidget: GlanceAppWidget() {
             verticalAlignment = Alignment.CenterVertically
         ){
             Box(
-                modifier = GlanceModifier.height(48.dp).width(48.dp).cornerRadius(8.dp).background(GlanceTheme.colors.surfaceVariant),
+                modifier = GlanceModifier.height(44.dp).width(44.dp).cornerRadius(8.dp).background(GlanceTheme.colors.surfaceVariant),
                 contentAlignment = Alignment(Alignment.CenterHorizontally,Alignment.CenterVertically)
             ) {
                 Image(
@@ -234,7 +228,10 @@ class VroomsWidget: GlanceAppWidget() {
             Spacer(modifier = GlanceModifier.width(8.dp))
             Text(
                 text = "${session.time}${if (session.endTime != null) " - " + session.endTime else ""}",
-                style = sessionStyle
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    color = GlanceTheme.colors.onSurfaceVariant
+                )
             )
         }
     }
@@ -247,6 +244,5 @@ class VroomsWidget: GlanceAppWidget() {
         ) {
             VroomsWorker.enqueue(context)
         }
-
     }
 }
