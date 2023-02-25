@@ -17,7 +17,9 @@ import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.cornerRadius
+import androidx.glance.appwidget.lazy.GridCells
 import androidx.glance.appwidget.lazy.LazyColumn
+import androidx.glance.appwidget.lazy.LazyVerticalGrid
 import androidx.glance.appwidget.lazy.items
 import androidx.glance.layout.*
 import androidx.glance.text.Text
@@ -30,7 +32,7 @@ class VroomsWidget: GlanceAppWidget() {
         private val thinMode = DpSize(120.dp, 120.dp)
         private val smallMode = DpSize(184.dp, 184.dp)
         private val mediumMode = DpSize(260.dp, 200.dp)
-        private val largeMode = DpSize(260.dp, 280.dp)
+        private val largeMode = DpSize(300.dp, 200.dp)
     }
 
     override val stateDefinition = VroomsInfoStateDefinition
@@ -75,18 +77,19 @@ class VroomsWidget: GlanceAppWidget() {
     }
 
     @Composable
+    // 2 titles max
     fun VroomsThin(info: VroomsInfo.Available) {
-        TrackImage(info)
+//        TrackImage(info)
         Column {
             RaceImage(info)
-            RaceDetails(info)
-            AllSessionsContainer(info.sessions)
+            RaceDetailsTiny(info)
         }
     }
 
     @Composable
+    // 3 titles max
     fun VroomsSmall(info: VroomsInfo.Available) {
-        TrackImage(info)
+//        TrackImage(info)
         Column {
             RaceImage(info)
             RaceDetails(info)
@@ -95,8 +98,9 @@ class VroomsWidget: GlanceAppWidget() {
     }
 
     @Composable
+    // 4 titles max
     fun VroomsMedium(info: VroomsInfo.Available) {
-        TrackImage(info)
+//        TrackImage(info)
         Column {
             RaceImage(info)
             RaceDetails(info)
@@ -105,8 +109,9 @@ class VroomsWidget: GlanceAppWidget() {
     }
 
     @Composable
+    // 5 titles max
     fun VroomsLarge(info: VroomsInfo.Available) {
-        TrackImage(info)
+//        TrackImage(info)
         Column {
             RaceImage(info)
             RaceDetails(info)
@@ -140,20 +145,18 @@ class VroomsWidget: GlanceAppWidget() {
     fun RaceDetails(info: VroomsInfo.Available) {
         Row (modifier = GlanceModifier.padding(vertical = 4.dp)) {
             Text(
-                text = "Round ${info.round}",
+                text = "Round ${info.round} • ${info.dateValue}",
                 style = TextStyle(
                     fontSize = 16.sp,
                     color = GlanceTheme.colors.onSurface
                 )
             )
-            Spacer(modifier = GlanceModifier.width(4.dp))
-            Text(text = "•",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    color = GlanceTheme.colors.onSurface
-                )
-            )
-            Spacer(modifier = GlanceModifier.width(4.dp))
+        }
+    }
+
+    @Composable
+    fun RaceDetailsTiny(info: VroomsInfo.Available) {
+        Row (modifier = GlanceModifier.padding(vertical = 4.dp)) {
             Text(
                 text = info.dateValue,
                 style = TextStyle(
@@ -166,8 +169,8 @@ class VroomsWidget: GlanceAppWidget() {
 
     @Composable
     fun AllSessionsContainer(sessionDates: List<SessionDate>) {
-        LazyColumn (
-            modifier = GlanceModifier.fillMaxWidth()
+        LazyVerticalGrid(
+            gridCells = GridCells.Adaptive(minSize = 128.dp)
         ) {
             items(sessionDates) { sessionDate ->
                 SessionDate(

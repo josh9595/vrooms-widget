@@ -22,11 +22,6 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.glance.unit.ColorProvider
 
-/**
- * Temporary implementation of theme object for Glance-appwidgets.
- *
- * Important: It will change!
- */
 object GlanceTheme {
     val colors: ColorProviders
         @Composable
@@ -36,11 +31,6 @@ object GlanceTheme {
 
 internal val LocalColorProviders = staticCompositionLocalOf { dynamicThemeColorProviders() }
 
-/**
- * Temporary implementation of Material3 theme for Glance.
- *
- * Note: This still requires manually setting the colors for all Glance components.
- */
 @Composable
 fun GlanceTheme(colors: ColorProviders = GlanceTheme.colors, content: @Composable () -> Unit) {
     CompositionLocalProvider(LocalColorProviders provides colors) {
@@ -48,9 +38,6 @@ fun GlanceTheme(colors: ColorProviders = GlanceTheme.colors, content: @Composabl
     }
 }
 
-/**
- * Holds a set of Glance-specific [ColorProvider] following Material naming conventions.
- */
 data class ColorProviders(
     val primary: ColorProvider,
     val onPrimary: ColorProvider,
