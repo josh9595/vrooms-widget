@@ -149,7 +149,7 @@ class VroomsWidget: GlanceAppWidget() {
 
     @Composable
     fun RaceDetails(info: VroomsInfo.Available) {
-        Row (modifier = GlanceModifier.padding(vertical = 4.dp)) {
+        Row (modifier = GlanceModifier.padding(bottom = 4.dp)) {
             Text(
                 text = "Round ${info.round} • ${info.dateValue}",
                 style = TextStyle(
@@ -162,7 +162,7 @@ class VroomsWidget: GlanceAppWidget() {
 
     @Composable
     fun RaceDetailsTiny(info: VroomsInfo.Available) {
-        Row (modifier = GlanceModifier.padding(vertical = 4.dp)) {
+        Row (modifier = GlanceModifier.padding(bottom = 4.dp)) {
             Text(
                 text = info.dateValue,
                 style = TextStyle(
