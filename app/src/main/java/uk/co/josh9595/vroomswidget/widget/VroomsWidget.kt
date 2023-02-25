@@ -5,6 +5,7 @@ import android.graphics.drawable.Icon
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,7 +19,6 @@ import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.lazy.GridCells
-import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.lazy.LazyVerticalGrid
 import androidx.glance.appwidget.lazy.items
 import androidx.glance.layout.*
@@ -49,7 +49,9 @@ class VroomsWidget: GlanceAppWidget() {
         GlanceTheme {
             when (vroomsInfo) {
                 is VroomsInfo.Available -> {
-                    AppWidgetBox(modifier = GlanceModifier.background(GlanceTheme.colors.surface)) {
+                    AppWidgetBox(
+                        modifier = GlanceModifier.background(GlanceTheme.colors.surface)
+                    ) {
                         when (size) {
                             thinMode -> VroomsThin(vroomsInfo)
                             smallMode -> VroomsSmall(vroomsInfo)
@@ -89,7 +91,7 @@ class VroomsWidget: GlanceAppWidget() {
     @Composable
     // 3 titles max
     fun VroomsSmall(info: VroomsInfo.Available) {
-//        TrackImage(info)
+        TrackImage(info)
         Column {
             RaceImage(info)
             RaceDetails(info)
@@ -100,7 +102,7 @@ class VroomsWidget: GlanceAppWidget() {
     @Composable
     // 4 titles max
     fun VroomsMedium(info: VroomsInfo.Available) {
-//        TrackImage(info)
+        TrackImage(info)
         Column {
             RaceImage(info)
             RaceDetails(info)
@@ -111,7 +113,7 @@ class VroomsWidget: GlanceAppWidget() {
     @Composable
     // 5 titles max
     fun VroomsLarge(info: VroomsInfo.Available) {
-//        TrackImage(info)
+        TrackImage(info)
         Column {
             RaceImage(info)
             RaceDetails(info)
@@ -121,14 +123,18 @@ class VroomsWidget: GlanceAppWidget() {
 
     @Composable
     fun TrackImage(info: VroomsInfo.Available) {
-        Image(
-            provider = IconImageProvider(Icon.createWithResource(LocalContext.current, info.trackImage).setTint(
-                ContextCompat.getColor(LocalContext.current, R.color.colorPrimary)
-            )),
-            contentDescription = info.name,
-            modifier = GlanceModifier.fillMaxWidth().padding(8.dp),
-            contentScale = ContentScale(1)
-        )
+        Box(
+            contentAlignment = Alignment.TopEnd,
+            modifier = GlanceModifier.fillMaxSize()
+        ) {
+            Image(
+                provider = IconImageProvider(Icon.createWithResource(LocalContext.current, info.trackImage).setTint(
+                    ContextCompat.getColor(LocalContext.current, R.color.colorSurfaceVariant)
+                )),
+                contentDescription = info.name,
+                modifier = GlanceModifier.wrapContentHeight()
+            )
+        }
     }
 
     @Composable
@@ -214,7 +220,7 @@ class VroomsWidget: GlanceAppWidget() {
             verticalAlignment = Alignment.CenterVertically
         ){
             Box(
-                modifier = GlanceModifier.height(44.dp).width(44.dp).cornerRadius(8.dp).background(GlanceTheme.colors.surfaceVariant),
+                modifier = GlanceModifier.height(44.dp).width(44.dp).cornerRadius(8.dp).background(GlanceTheme.colors.primaryContainer),
                 contentAlignment = Alignment(Alignment.CenterHorizontally,Alignment.CenterVertically)
             ) {
                 Image(
@@ -233,7 +239,7 @@ class VroomsWidget: GlanceAppWidget() {
                 text = "${session.time}${if (session.endTime != null) " - " + session.endTime else ""}",
                 style = TextStyle(
                     fontSize = 16.sp,
-                    color = GlanceTheme.colors.onSurfaceVariant
+                    color = GlanceTheme.colors.onPrimaryContainer
                 )
             )
         }

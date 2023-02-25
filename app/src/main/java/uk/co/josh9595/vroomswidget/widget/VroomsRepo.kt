@@ -1,26 +1,30 @@
 package uk.co.josh9595.vroomswidget.widget
 
-import androidx.compose.ui.text.toLowerCase
 import uk.co.josh9595.vroomswidget.R
 import uk.co.josh9595.vroomswidget.data.Sessions
 import uk.co.josh9595.vroomswidget.data.VroomsCalendar
 import java.time.LocalDateTime
-import java.util.*
 
 object VroomsRepo {
     suspend fun getVroomsInfo(calendar: VroomsCalendar): VroomsInfo {
 
         val currentDate = LocalDateTime.now()
         calendar.races.map { race ->
-            val raceStartDate = LocalDateTime.parse(race.sessions.fp1.dropLast(1))
-            if (raceStartDate.isAfter(currentDate)) {
+            val sundayDate = LocalDateTime.parse(race.sessions.gp.dropLast(1))
+            val saturdayDate = sundayDate.minusDays(1)
+            val fridayDate = sundayDate.minusDays(2)
+
+            if (sundayDate.isAfter(currentDate)) {
+                var showFriday = true
+                var showSaturday = true
+
                 return VroomsInfo.Available(
                     round = race.round,
                     dateValue = buildDate(race.sessions.fp1, race.sessions.gp),
                     name = race.name,
                     nameImage = getTrack(race.slug).nameImage,
                     trackImage = getTrack(race.slug).trackImage,
-                    sessions = buildSessions(race.sessions)
+                    sessions = buildSessions(race.sessions, showFriday, showSaturday)
                 )
             }
         }
@@ -69,83 +73,115 @@ fun buildDate(firstSession: String, lastSession: String): String {
     }
 }
 
-fun buildSessions(sessions: Sessions): List<SessionDate> {
+fun buildSessions(sessions: Sessions, showFriday: Boolean, showSaturday: Boolean): List<SessionDate> {
     val sessionsList = mutableListOf<SessionDate>()
 
     sessions.sprint?.let {
-        sessionsList.add(
-            SessionDate(
-                "friday",
-                R.drawable.friday,
-                Session(
-                    "free practice 1",
-                    R.drawable.fp1,
-                    "${LocalDateTime.parse(sessions.fp1.dropLast(1)).hour}:${addDigit(LocalDateTime.parse(sessions.fp1.dropLast(1)).minute)}",
-                    "${LocalDateTime.parse(sessions.fp1.dropLast(1)).plusHours(1).hour}:${addDigit(LocalDateTime.parse(sessions.fp1.dropLast(1)).minute)}"
-                ),
-                Session(
-                    "qualifying",
-                    R.drawable.q,
-                    "${LocalDateTime.parse(sessions.qualifying.dropLast(1)).hour}:${addDigit(LocalDateTime.parse(sessions.qualifying.dropLast(1)).minute)}",
-                    "${LocalDateTime.parse(sessions.qualifying.dropLast(1)).plusHours(1).hour}:${addDigit(LocalDateTime.parse(sessions.qualifying.dropLast(1)).minute)}"
+        if (showFriday) {
+            sessionsList.add(
+                SessionDate(
+                    "friday",
+                    R.drawable.friday,
+                    Session(
+                        "free practice 1",
+                        R.drawable.fp1,
+                        "${LocalDateTime.parse(sessions.fp1.dropLast(1)).hour}:${addDigit(LocalDateTime.parse(sessions.fp1.dropLast(1)).minute)}",
+                        "${LocalDateTime.parse(sessions.fp1.dropLast(1)).plusHours(1).hour}:${addDigit(LocalDateTime.parse(sessions.fp1.dropLast(1)).minute)}"
+                    ),
+                    Session(
+                        "qualifying",
+                        R.drawable.q,
+                        "${LocalDateTime.parse(sessions.qualifying.dropLast(1)).hour}:${addDigit(LocalDateTime.parse(sessions.qualifying.dropLast(1)).minute)}",
+                        "${LocalDateTime.parse(sessions.qualifying.dropLast(1)).plusHours(1).hour}:${addDigit(LocalDateTime.parse(sessions.qualifying.dropLast(1)).minute)}"
+                    )
                 )
             )
-        )
-        sessionsList.add(
-            SessionDate(
-                "saturday",
-                R.drawable.saturday,
-                Session(
-                    "free practice 2",
-                    R.drawable.fp2,
-                    "${LocalDateTime.parse(sessions.fp2.dropLast(1)).hour}:${addDigit(LocalDateTime.parse(sessions.fp2.dropLast(1)).minute)}",
-                    "${LocalDateTime.parse(sessions.fp2.dropLast(1)).plusHours(1).hour}:${addDigit(LocalDateTime.parse(sessions.fp2.dropLast(1)).minute)}"
-                ),
-                Session(
-                    "sprint",
-                    R.drawable.s,
-                    "${LocalDateTime.parse(it.dropLast(1)).hour}:${addDigit(LocalDateTime.parse(it.dropLast(1)).minute)}",
-                    "${LocalDateTime.parse(it.dropLast(1)).plusHours(1).hour}:${addDigit(LocalDateTime.parse(it.dropLast(1)).minute)}"
+        }
+        if (showSaturday) {
+            sessionsList.add(
+                SessionDate(
+                    "saturday",
+                    R.drawable.saturday,
+                    Session(
+                        "free practice 2",
+                        R.drawable.fp2,
+                        "${LocalDateTime.parse(sessions.fp2.dropLast(1)).hour}:${addDigit(LocalDateTime.parse(sessions.fp2.dropLast(1)).minute)}",
+                        "${LocalDateTime.parse(sessions.fp2.dropLast(1)).plusHours(1).hour}:${addDigit(LocalDateTime.parse(sessions.fp2.dropLast(1)).minute)}"
+                    ),
+                    Session(
+                        "sprint",
+                        R.drawable.s,
+                        "${LocalDateTime.parse(it.dropLast(1)).hour}:${addDigit(LocalDateTime.parse(it.dropLast(1)).minute)}",
+                        "${LocalDateTime.parse(it.dropLast(1)).plusHours(1).hour}:${addDigit(LocalDateTime.parse(it.dropLast(1)).minute)}"
+                    )
                 )
             )
-        )
+        }
     } ?: run {
-        sessionsList.add(
-            SessionDate(
-                "friday",
-                R.drawable.friday,
-                Session(
-                    "free practice 1",
-                    R.drawable.fp1,
-                    "${LocalDateTime.parse(sessions.fp1.dropLast(1)).hour}:${addDigit(LocalDateTime.parse(sessions.fp1.dropLast(1)).minute)}",
-                    "${LocalDateTime.parse(sessions.fp1.dropLast(1)).plusHours(1).hour}:${addDigit(LocalDateTime.parse(sessions.fp1.dropLast(1)).minute)}"
-                ),
-                Session(
-                    "free practice 2",
-                    R.drawable.fp2,
-                    "${LocalDateTime.parse(sessions.fp2.dropLast(1)).hour}:${addDigit(LocalDateTime.parse(sessions.fp2.dropLast(1)).minute)}",
-                    "${LocalDateTime.parse(sessions.fp2.dropLast(1)).plusHours(1).hour}:${addDigit(LocalDateTime.parse(sessions.fp2.dropLast(1)).minute)}"
+        if (showFriday) {
+            sessionsList.add(
+                SessionDate(
+                    "friday",
+                    R.drawable.friday,
+                    Session(
+                        "free practice 1",
+                        R.drawable.fp1,
+                        "${LocalDateTime.parse(sessions.fp1.dropLast(1)).hour}:${
+                            addDigit(
+                                LocalDateTime.parse(sessions.fp1.dropLast(1)).minute
+                            )
+                        }",
+                        "${
+                            LocalDateTime.parse(sessions.fp1.dropLast(1)).plusHours(1).hour
+                        }:${addDigit(LocalDateTime.parse(sessions.fp1.dropLast(1)).minute)}"
+                    ),
+                    Session(
+                        "free practice 2",
+                        R.drawable.fp2,
+                        "${LocalDateTime.parse(sessions.fp2.dropLast(1)).hour}:${
+                            addDigit(
+                                LocalDateTime.parse(sessions.fp2.dropLast(1)).minute
+                            )
+                        }",
+                        "${
+                            LocalDateTime.parse(sessions.fp2.dropLast(1)).plusHours(1).hour
+                        }:${addDigit(LocalDateTime.parse(sessions.fp2.dropLast(1)).minute)}"
+                    )
                 )
             )
-        )
-        sessionsList.add(
-            SessionDate(
-                "saturday",
-                R.drawable.saturday,
-                Session(
-                    "free practice 3",
-                    R.drawable.fp3,
-                    "${LocalDateTime.parse(sessions.fp3?.dropLast(1)).hour}:${addDigit(LocalDateTime.parse(sessions.fp3?.dropLast(1)).minute)}",
-                    "${LocalDateTime.parse(sessions.fp3?.dropLast(1)).plusHours(1).hour}:${addDigit(LocalDateTime.parse(sessions.fp3?.dropLast(1)).minute)}"
-                ),
-                Session(
-                    "qualifying",
-                    R.drawable.q,
-                    "${LocalDateTime.parse(sessions.qualifying.dropLast(1)).hour}:${addDigit(LocalDateTime.parse(sessions.qualifying.dropLast(1)).minute)}",
-                    "${LocalDateTime.parse(sessions.qualifying.dropLast(1)).plusHours(1).hour}:${addDigit(LocalDateTime.parse(sessions.qualifying.dropLast(1)).minute)}"
+        }
+        if (showSaturday) {
+            sessionsList.add(
+                SessionDate(
+                    "saturday",
+                    R.drawable.saturday,
+                    Session(
+                        "free practice 3",
+                        R.drawable.fp3,
+                        "${LocalDateTime.parse(sessions.fp3?.dropLast(1)).hour}:${
+                            addDigit(
+                                LocalDateTime.parse(sessions.fp3?.dropLast(1)).minute
+                            )
+                        }",
+                        "${
+                            LocalDateTime.parse(sessions.fp3?.dropLast(1)).plusHours(1).hour
+                        }:${addDigit(LocalDateTime.parse(sessions.fp3?.dropLast(1)).minute)}"
+                    ),
+                    Session(
+                        "qualifying",
+                        R.drawable.q,
+                        "${LocalDateTime.parse(sessions.qualifying.dropLast(1)).hour}:${
+                            addDigit(
+                                LocalDateTime.parse(sessions.qualifying.dropLast(1)).minute
+                            )
+                        }",
+                        "${
+                            LocalDateTime.parse(sessions.qualifying.dropLast(1)).plusHours(1).hour
+                        }:${addDigit(LocalDateTime.parse(sessions.qualifying.dropLast(1)).minute)}"
+                    )
                 )
             )
-        )
+        }
     }
 
     sessionsList.add(SessionDate(
