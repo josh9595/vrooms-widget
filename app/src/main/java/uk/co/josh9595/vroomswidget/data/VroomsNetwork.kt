@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object VroomsNetwork {
     val retrofit: VroomsApi by lazy {
         Retrofit.Builder()
-            .baseUrl("https://raw.githubusercontent.com/sportstimes/f1/main/_db/f1/")
+            .baseUrl("https://raw.githubusercontent.com/josh9595/vrooms-widget/main/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(VroomsApi::class.java)
