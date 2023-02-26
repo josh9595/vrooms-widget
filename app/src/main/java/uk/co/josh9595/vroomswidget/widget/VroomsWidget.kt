@@ -29,6 +29,7 @@ import uk.co.josh9595.vroomswidget.R
 
 class VroomsWidget: GlanceAppWidget() {
     companion object {
+        private val smallestMode = DpSize(120.dp, 60.dp)
         private val thinMode = DpSize(120.dp, 120.dp)
         private val smallMode = DpSize(184.dp, 184.dp)
         private val mediumMode = DpSize(260.dp, 200.dp)
@@ -38,7 +39,7 @@ class VroomsWidget: GlanceAppWidget() {
     override val stateDefinition = VroomsInfoStateDefinition
 
     override val sizeMode: SizeMode = SizeMode.Responsive(
-        setOf(thinMode, smallMode, mediumMode, largeMode)
+        setOf(smallestMode, thinMode, smallMode, mediumMode, largeMode)
     )
 
     @Composable
@@ -53,6 +54,7 @@ class VroomsWidget: GlanceAppWidget() {
                         modifier = GlanceModifier.background(GlanceTheme.colors.surface)
                     ) {
                         when (size) {
+                            smallestMode -> VroomsSmallest(vroomsInfo)
                             thinMode -> VroomsThin(vroomsInfo)
                             smallMode -> VroomsSmall(vroomsInfo)
                             mediumMode -> VroomsMedium(vroomsInfo)
@@ -79,9 +81,7 @@ class VroomsWidget: GlanceAppWidget() {
     }
 
     @Composable
-    // 2 titles max
-    fun VroomsThin(info: VroomsInfo.Available) {
-//        TrackImage(info)
+    fun VroomsSmallest(info: VroomsInfo.Available) {
         Column {
             RaceImage(info)
             RaceDetailsTiny(info)
@@ -89,7 +89,16 @@ class VroomsWidget: GlanceAppWidget() {
     }
 
     @Composable
-    // 3 titles max
+    fun VroomsThin(info: VroomsInfo.Available) {
+        TrackImage(info)
+        Column {
+            RaceImage(info)
+            RaceDetailsTiny(info)
+            AllSessionsContainer(info.sessions, false)
+        }
+    }
+
+    @Composable
     fun VroomsSmall(info: VroomsInfo.Available) {
         TrackImage(info)
         Column {
@@ -100,7 +109,6 @@ class VroomsWidget: GlanceAppWidget() {
     }
 
     @Composable
-    // 4 titles max
     fun VroomsMedium(info: VroomsInfo.Available) {
         TrackImage(info)
         Column {
@@ -111,7 +119,6 @@ class VroomsWidget: GlanceAppWidget() {
     }
 
     @Composable
-    // 5 titles max
     fun VroomsLarge(info: VroomsInfo.Available) {
         TrackImage(info)
         Column {
@@ -174,31 +181,32 @@ class VroomsWidget: GlanceAppWidget() {
     }
 
     @Composable
-    fun AllSessionsContainer(sessionDates: List<SessionDate>) {
+    fun AllSessionsContainer(sessionDates: List<SessionDate>, includeEndTime: Boolean = true) {
         LazyVerticalGrid(
             gridCells = GridCells.Adaptive(minSize = 128.dp)
         ) {
             items(sessionDates) { sessionDate ->
                 SessionDate(
                     sessionDate = sessionDate,
-                    modifier = GlanceModifier
+                    modifier = GlanceModifier,
+                    includeEndTime = includeEndTime
                 )
             }
         }
     }
 
     @Composable
-    fun SessionDate(sessionDate: SessionDate, modifier: GlanceModifier) {
+    fun SessionDate(sessionDate: SessionDate, modifier: GlanceModifier, includeEndTime: Boolean) {
         Column (
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
         ){
             SessionDateImage(sessionDate.dayImage)
             Spacer(modifier = GlanceModifier.height(12.dp))
-            Session(sessionDate.sessionOne)
+            Session(sessionDate.sessionOne, includeEndTime)
             sessionDate.sessionTwo?.let {
                 Spacer(modifier = GlanceModifier.height(8.dp))
-                Session(it)
+                Session(it, includeEndTime)
                 Spacer(modifier = GlanceModifier.height(12.dp))
             }
         }
@@ -215,7 +223,7 @@ class VroomsWidget: GlanceAppWidget() {
     }
 
     @Composable
-    fun Session(session: Session) {
+    fun Session(session: Session, includeEndTime: Boolean) {
         Row (
             verticalAlignment = Alignment.CenterVertically
         ){
@@ -236,7 +244,7 @@ class VroomsWidget: GlanceAppWidget() {
             }
             Spacer(modifier = GlanceModifier.width(8.dp))
             Text(
-                text = "${session.time}${if (session.endTime != null) " - " + session.endTime else ""}",
+                text = "${session.time}${if (session.endTime != null && includeEndTime) " - " + session.endTime else ""}",
                 style = TextStyle(
                     fontSize = 16.sp,
                     color = GlanceTheme.colors.onPrimaryContainer
