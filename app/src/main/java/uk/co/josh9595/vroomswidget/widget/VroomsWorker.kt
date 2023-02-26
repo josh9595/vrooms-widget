@@ -26,7 +26,6 @@ class VroomsWorker(
             )
             var workPolicy = ExistingPeriodicWorkPolicy.KEEP
 
-            // Replace any enqueued work and expedite the request
             if (force) {
                 workPolicy = ExistingPeriodicWorkPolicy.REPLACE
             }
@@ -49,18 +48,13 @@ class VroomsWorker(
         val calendar = VroomsNetwork.retrofit.getCalendar()
 
         return try {
-            // Update state to indicate loading
             setWidgetState(glanceIds, VroomsInfo.Loading)
-            // Update state with new data
-
             setWidgetState(glanceIds, VroomsRepo.getVroomsInfo(calendar))
 
             Result.success()
         } catch (e: Exception) {
             setWidgetState(glanceIds, VroomsInfo.Unavailable(e.message.orEmpty()))
             if (runAttemptCount < 10) {
-                // Exponential backoff strategy will avoid the request to repeat
-                // too fast in case of failures.
                 Result.retry()
             } else {
                 Result.failure()
