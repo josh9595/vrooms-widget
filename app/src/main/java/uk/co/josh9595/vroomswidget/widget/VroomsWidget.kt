@@ -3,6 +3,7 @@ package uk.co.josh9595.vroomswidget.widget
 import android.content.Context
 import android.graphics.drawable.Icon
 import android.os.Build
+import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -129,27 +130,27 @@ class VroomsWidget: GlanceAppWidget() {
     }
 
     @Composable
-    fun TrackImage(info: VroomsInfo.Available) {
+    fun TrackImage(
+        info: VroomsInfo.Available
+    ) {
         Box(
             contentAlignment = Alignment.TopEnd,
             modifier = GlanceModifier.fillMaxSize()
         ) {
             Image(
-                provider = IconImageProvider(Icon.createWithResource(LocalContext.current, info.trackImage).setTint(
-                    ContextCompat.getColor(LocalContext.current, R.color.colorSurfaceVariant)
-                )),
-                contentDescription = info.name,
+                provider = ImageProvider(info.trackImage),
+                contentDescription = null,
                 modifier = GlanceModifier.wrapContentHeight()
             )
         }
     }
 
     @Composable
-    fun RaceImage(info: VroomsInfo.Available) {
+    fun RaceImage(
+        info: VroomsInfo.Available
+    ) {
         Image(
-            provider = IconImageProvider(Icon.createWithResource(LocalContext.current, info.nameImage).setTint(
-                ContextCompat.getColor(LocalContext.current, R.color.colorPrimary)
-            )),
+            provider = ImageProvider(info.nameImage),
             contentDescription = info.name
         )
     }
@@ -213,17 +214,20 @@ class VroomsWidget: GlanceAppWidget() {
     }
 
     @Composable
-    fun SessionDateImage(id: Int) {
+    fun SessionDateImage(
+        id: Int
+    ) {
         Image(
-            provider = IconImageProvider(Icon.createWithResource(LocalContext.current, id).setTint(
-                ContextCompat.getColor(LocalContext.current, R.color.colorPrimary)
-            )),
+            provider = ImageProvider(id),
             contentDescription = "friday"
         )
     }
 
     @Composable
-    fun Session(session: Session, includeEndTime: Boolean) {
+    fun Session(
+        session: Session,
+        includeEndTime: Boolean
+    ) {
         Row (
             verticalAlignment = Alignment.CenterVertically
         ){
@@ -232,13 +236,8 @@ class VroomsWidget: GlanceAppWidget() {
                 contentAlignment = Alignment(Alignment.CenterHorizontally,Alignment.CenterVertically)
             ) {
                 Image(
-                    provider = IconImageProvider(
-                        Icon.createWithResource(LocalContext.current, session.nameImage)
-                            .setTint(
-                                ContextCompat.getColor(LocalContext.current, R.color.colorPrimary)
-                            )
-                    ),
-                    contentDescription = "friday",
+                    provider = ImageProvider(session.nameImage),
+                    contentDescription = session.name,
                     modifier = GlanceModifier.height(20.dp)
                 )
             }
