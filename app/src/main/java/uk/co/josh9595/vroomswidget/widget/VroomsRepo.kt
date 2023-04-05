@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter
 object VroomsRepo {
     suspend fun getVroomsInfo(calendar: VroomsCalendar): VroomsInfo {
 
-        val currentDate = LocalDate.now().minusDays(1)
+        val currentDate = LocalDate.now()
         calendar.races.map { race ->
             val sundayDate = LocalDate.parse(race.sessions.gp.split("T")[0])
 
