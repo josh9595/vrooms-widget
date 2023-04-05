@@ -33,8 +33,8 @@ class VroomsWidget: GlanceAppWidget() {
         private val smallestMode = DpSize(120.dp, 60.dp)
         private val thinMode = DpSize(120.dp, 120.dp)
         private val smallMode = DpSize(184.dp, 184.dp)
-        private val mediumMode = DpSize(260.dp, 200.dp)
-        private val largeMode = DpSize(300.dp, 200.dp)
+        private val mediumMode = DpSize(220.dp, 200.dp)
+        private val largeMode = DpSize(320.dp, 200.dp)
     }
 
     override val stateDefinition = VroomsInfoStateDefinition
@@ -184,9 +184,10 @@ class VroomsWidget: GlanceAppWidget() {
     @Composable
     fun AllSessionsContainer(sessionDates: List<SessionDate>, includeEndTime: Boolean = true) {
         LazyVerticalGrid(
-            gridCells = GridCells.Adaptive(minSize = 128.dp)
+            gridCells = GridCells.Adaptive(minSize = 156.dp),
+            modifier = GlanceModifier.padding(top = 8.dp)
         ) {
-            items(sessionDates) { sessionDate ->
+            items(sessionDates.filter { !it.hasPassed }) { sessionDate ->
                 SessionDate(
                     sessionDate = sessionDate,
                     modifier = GlanceModifier,
@@ -203,12 +204,12 @@ class VroomsWidget: GlanceAppWidget() {
             modifier = modifier
         ){
             SessionDateImage(sessionDate.dayImage)
-            Spacer(modifier = GlanceModifier.height(12.dp))
+            Spacer(modifier = GlanceModifier.height(8.dp))
             Session(sessionDate.sessionOne, includeEndTime)
             sessionDate.sessionTwo?.let {
                 Spacer(modifier = GlanceModifier.height(8.dp))
                 Session(it, includeEndTime)
-                Spacer(modifier = GlanceModifier.height(12.dp))
+                Spacer(modifier = GlanceModifier.height(8.dp))
             }
         }
     }
@@ -232,7 +233,7 @@ class VroomsWidget: GlanceAppWidget() {
             verticalAlignment = Alignment.CenterVertically
         ){
             Box(
-                modifier = GlanceModifier.height(44.dp).width(44.dp).cornerRadius(8.dp).background(GlanceTheme.colors.primaryContainer),
+                modifier = GlanceModifier.height(40.dp).width(40.dp).cornerRadius(8.dp).background(GlanceTheme.colors.primaryContainer),
                 contentAlignment = Alignment(Alignment.CenterHorizontally,Alignment.CenterVertically)
             ) {
                 Image(

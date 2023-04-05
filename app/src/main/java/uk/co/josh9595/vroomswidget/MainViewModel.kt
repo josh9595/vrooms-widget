@@ -9,9 +9,13 @@ import kotlinx.coroutines.launch
 import uk.co.josh9595.vroomswidget.data.VroomsNetwork
 import uk.co.josh9595.vroomswidget.data.raceToVroomsInfo
 import uk.co.josh9595.vroomswidget.widget.VroomsInfo
+import java.time.LocalDate
 
 class MainViewModel: ViewModel() {
     var scheduleResponse: List<VroomsInfo.Available> by mutableStateOf(emptyList())
+        private set
+
+    var nextRaceIndex: Int by mutableStateOf(0)
         private set
 
     fun getSchedule() {
@@ -20,9 +24,17 @@ class MainViewModel: ViewModel() {
             try {
                 val scheduleList = apiService.getCalendar()
                 val response = scheduleList.races.map {
-                    raceToVroomsInfo(it, showFriday = true, showSaturday = true)
+                    raceToVroomsInfo(it)
                 }
                 scheduleResponse = response
+
+                val currentDate = LocalDate.now()
+                scheduleList.races.mapIndexed { index, it ->
+                    val sundayDate = LocalDate.parse(it.sessions.gp.split("T")[0])
+                    if (sundayDate.plusDays(1).isAfter(currentDate)) {
+                        nextRaceIndex = index
+                    }
+                }
             }
             catch (_: Exception) {}
         }

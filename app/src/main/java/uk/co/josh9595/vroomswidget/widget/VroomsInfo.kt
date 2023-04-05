@@ -30,7 +30,8 @@ data class SessionDate(
     val date: String,
     val dayImage: Int,
     val sessionOne: Session,
-    val sessionTwo: Session? = null
+    val sessionTwo: Session? = null,
+    val hasPassed: Boolean = false
 )
 
 @Serializable
@@ -38,5 +39,6 @@ data class Session(
     val name: String,
     val nameImage: Int,
     val time: String,
-    val endTime: String?
+    val endTime: String?,
+    val hasPassed: Boolean = false,
 )

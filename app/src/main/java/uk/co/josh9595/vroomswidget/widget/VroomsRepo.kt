@@ -14,22 +14,12 @@ import java.time.format.DateTimeFormatter
 object VroomsRepo {
     suspend fun getVroomsInfo(calendar: VroomsCalendar): VroomsInfo {
 
-        val currentDate = LocalDate.now()
+        val currentDate = LocalDate.now().minusDays(1)
         calendar.races.map { race ->
             val sundayDate = LocalDate.parse(race.sessions.gp.split("T")[0])
 
             if (sundayDate.plusDays(1).isAfter(currentDate)) {
-                var showFriday = true
-                var showSaturday = true
-
-                if (currentDate.isEqual(sundayDate)) {
-                    showFriday = false
-                    showSaturday = false
-                } else if (currentDate.isEqual(sundayDate.minusDays(1))) {
-                    showFriday = false
-                }
-
-                return raceToVroomsInfo(race, showFriday, showSaturday)
+                return raceToVroomsInfo(race)
             }
         }
 
