@@ -1,16 +1,10 @@
 package uk.co.josh9595.vroomswidget.widget
 
 import android.content.Context
-import android.graphics.drawable.Icon
-import android.os.Build
-import androidx.annotation.ColorRes
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.glance.*
 import androidx.glance.action.ActionParameters
 import androidx.glance.appwidget.CircularProgressIndicator
@@ -22,11 +16,11 @@ import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.lazy.GridCells
 import androidx.glance.appwidget.lazy.LazyVerticalGrid
 import androidx.glance.appwidget.lazy.items
+import androidx.glance.appwidget.provideContent
 import androidx.glance.layout.*
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import uk.co.josh9595.vroomswidget.*
-import uk.co.josh9595.vroomswidget.R
 
 class VroomsWidget: GlanceAppWidget() {
     companion object {
@@ -43,16 +37,15 @@ class VroomsWidget: GlanceAppWidget() {
         setOf(smallestMode, thinMode, smallMode, mediumMode, largeMode)
     )
 
-    @Composable
-    override fun Content() {
+    override suspend fun provideGlance(context: Context, id: GlanceId) = provideContent {
         val vroomsInfo = currentState<VroomsInfo>()
         val size = LocalSize.current
 
-        GlanceTheme {
+        VroomsGlanceTheme {
             when (vroomsInfo) {
                 is VroomsInfo.Available -> {
                     AppWidgetBox(
-                        modifier = GlanceModifier.background(GlanceTheme.colors.surface)
+                        modifier = GlanceModifier.background(VroomsGlanceTheme.colors.surface)
                     ) {
                         when (size) {
                             smallestMode -> VroomsSmallest(vroomsInfo)
@@ -162,7 +155,7 @@ class VroomsWidget: GlanceAppWidget() {
                 text = "Round ${info.round} • ${info.dateValue}",
                 style = TextStyle(
                     fontSize = 16.sp,
-                    color = GlanceTheme.colors.onSurface
+                    color = VroomsGlanceTheme.colors.onSurface
                 )
             )
         }
@@ -175,7 +168,7 @@ class VroomsWidget: GlanceAppWidget() {
                 text = info.dateValue,
                 style = TextStyle(
                     fontSize = 16.sp,
-                    color = GlanceTheme.colors.onSurface
+                    color = VroomsGlanceTheme.colors.onSurface
                 )
             )
         }
@@ -233,7 +226,7 @@ class VroomsWidget: GlanceAppWidget() {
             verticalAlignment = Alignment.CenterVertically
         ){
             Box(
-                modifier = GlanceModifier.height(40.dp).width(40.dp).cornerRadius(8.dp).background(GlanceTheme.colors.primaryContainer),
+                modifier = GlanceModifier.height(40.dp).width(40.dp).cornerRadius(8.dp).background(VroomsGlanceTheme.colors.primaryContainer),
                 contentAlignment = Alignment(Alignment.CenterHorizontally,Alignment.CenterVertically)
             ) {
                 Image(
@@ -247,7 +240,7 @@ class VroomsWidget: GlanceAppWidget() {
                 text = "${session.time}${if (session.endTime != null && includeEndTime) " - " + session.endTime else ""}",
                 style = TextStyle(
                     fontSize = 16.sp,
-                    color = GlanceTheme.colors.onPrimaryContainer
+                    color = VroomsGlanceTheme.colors.onPrimaryContainer
                 )
             )
         }

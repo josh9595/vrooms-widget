@@ -50,7 +50,7 @@ fun appWidgetBackgroundModifier() = GlanceModifier
     .fillMaxSize()
     .padding(16.dp)
     .appWidgetBackground()
-    .background(GlanceTheme.colors.background)
+    .background(VroomsGlanceTheme.colors.background)
     .appWidgetBackgroundCornerRadius()
 
 fun GlanceModifier.appWidgetBackgroundCornerRadius(): GlanceModifier {

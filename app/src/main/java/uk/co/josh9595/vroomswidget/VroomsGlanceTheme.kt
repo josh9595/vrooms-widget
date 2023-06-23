@@ -6,7 +6,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.glance.unit.ColorProvider
 
-object GlanceTheme {
+object VroomsGlanceTheme {
     val colors: ColorProviders
         @Composable
         @ReadOnlyComposable
@@ -16,7 +16,7 @@ object GlanceTheme {
 internal val LocalColorProviders = staticCompositionLocalOf { dynamicThemeColorProviders() }
 
 @Composable
-fun GlanceTheme(colors: ColorProviders = GlanceTheme.colors, content: @Composable () -> Unit) {
+fun VroomsGlanceTheme(colors: ColorProviders = VroomsGlanceTheme.colors, content: @Composable () -> Unit) {
     CompositionLocalProvider(LocalColorProviders provides colors) {
         content()
     }

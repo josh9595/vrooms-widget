@@ -26,10 +26,11 @@ data class Races (
 
 data class Sessions (
     @SerializedName("fp1") var fp1: String,
-    @SerializedName("fp2") var fp2: String,
+    @SerializedName("fp2") var fp2: String?,
     @SerializedName("fp3") var fp3: String?,
     @SerializedName("qualifying") var qualifying: String,
     @SerializedName("sprint") var sprint: String?,
+    @SerializedName("sq") var sq: String?,
     @SerializedName("gp") var gp: String
 )
 
@@ -113,11 +114,11 @@ fun buildSessions(sessions: Sessions): List<SessionDate> {
                 "saturday",
                 R.drawable.saturday,
                 Session(
-                    "free practice 2",
-                    R.drawable.fp2,
-                    "${getHour(sessions.fp2)}:${getMinute(sessions.fp2)}",
-                    "${getHourPlusOne(sessions.fp2)}:${getMinute(sessions.fp2)}",
-                    hasSessionPassed(sessions.fp2)
+                    "sprint qualifying",
+                    R.drawable.sq,
+                    "${getHour(sessions.sq)}:${getMinute(sessions.sq)}",
+                    "${getHourPlusOne(sessions.sq)}:${getMinute(sessions.sq)}",
+                    hasSessionPassed(sessions.sq)
                 ),
                 Session(
                     "sprint",
@@ -126,7 +127,7 @@ fun buildSessions(sessions: Sessions): List<SessionDate> {
                     "${getHourPlusOne(it)}:${getMinute(it)}",
                     hasSessionPassed(it)
                 ),
-                hasDayPassed(sessions.fp2)
+                hasDayPassed(sessions.sq ?: "")
             )
         )
 
